@@ -1,0 +1,745 @@
+
+import os
+
+# محتوى الصفحة المتكامل (HTML, CSS, JS)
+html_content = """<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Nest | عش البرمجة والتكنولوجيا</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: #151C2C;
+            --bg-card-hover: #1E293B;
+            --primary: #6366F1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #06B6D4;
+            --accent: #10B981;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Glowing Orbs in Background */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+        .orb-1 {
+            top: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+        }
+        .orb-2 {
+            bottom: 10%;
+            left: -10%;
+            width: 450px;
+            height: 450px;
+            background: var(--secondary);
+        }
+
+        /* Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--secondary);
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 120px 8% 60px;
+            gap: 40px;
+        }
+
+        .hero-text {
+            max-width: 650px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--secondary);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.25;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 span {
+            background: linear-gradient(135deg, #818CF8, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 35px;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            box-shadow: 0 10px 25px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .hero-illustration {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .code-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            width: 380px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #EF4444; }
+        .dot-yellow { background: #F59E0B; }
+        .dot-green { background: #10B981; }
+
+        .code-content {
+            font-family: monospace;
+            font-size: 0.95rem;
+            direction: ltr;
+            text-align: left;
+            color: #E2E8F0;
+        }
+
+        .code-keyword { color: #F472B6; }
+        .code-func { color: #60A5FA; }
+        .code-str { color: #34D399; }
+
+        /* Sections Common */
+        section {
+            padding: 100px 8%;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Services Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 35px 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 16px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Courses Section */
+        .course-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--secondary);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .course-img {
+            height: 180px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(6, 182, 212, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--text-main);
+        }
+
+        .course-body {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .course-body h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .course-body p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .course-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+        }
+
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .contact-info p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Toast Alert */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent);
+            color: #000;
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(150%);
+            transition: transform 0.4s ease;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 8%;
+            background: #070A10;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero-text { margin: 0 auto; }
+            .cta-btns { justify-content: center; }
+            nav ul { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Header -->
+    <header>
+        <a href="#" class="logo">
+            <i class="fas fa-cubes"></i>
+            <span>Code Nest</span>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="#services">الخدمات</a></li>
+                <li><a href="#courses">الكورسات</a></li>
+                <li><a href="#contact">التواصل</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-text">
+            <div class="badge">
+                <i class="fas fa-rocket"></i> أهلاً بك في Code Nest
+            </div>
+            <h1>نبني <span>المستقبل الرقمي</span> ونطوّر المهارات البرمجية</h1>
+            <p>نحن مؤسسة متكاملة لتقديم الحلول البرمجية الذكية وتدريب جيل جديد من المطورين والمبدعين في عالم التكنولوجيا.</p>
+            <div class="cta-btns">
+                <a href="#courses" class="btn btn-primary"><i class="fas fa-graduation-cap"></i> استكشف الكورسات</a>
+                <a href="#services" class="btn btn-secondary"><i class="fas fa-laptop-code"></i> خدماتنا البرمجية</a>
+            </div>
+        </div>
+        <div class="hero-illustration">
+            <div class="code-box">
+                <div class="code-header">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+                <div class="code-content">
+                    <span class="code-keyword">class</span> <span class="code-func">CodeNest</span>:<br>
+                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-func">__init__</span>(self):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;self.services = [<span class="code-str">"Web"</span>, <span class="code-str">"AI"</span>]<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;self.mission = <span class="code-str">"Empower Developers"</span><br><br>
+                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-func">build_future</span>(self):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-str">"Success!"</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <div class="section-header">
+            <h2>الخدمات التي نقدمها</h2>
+            <p>نوفر أحدث الحلول التقنية المصممة خصيصاً لمساعدة الشركات والأفراد على النجاح والنمو.</p>
+        </div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-globe"></i></div>
+                <h3>تطوير المواقع والويب</h3>
+                <p>تصميم وتطوير مواقع وتطبيقات ويب حديثة، سريعة، ومتجاوبة مع كافة الشاشات.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>تطبيقات الهواتف</h3>
+                <p>إنشاء تطبيقات هواتف متطورة لأنظمة iOS و Android باستخدام أحدث التقنيات.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-brain"></i></div>
+                <h3>حلول الذكاء الاصطناعي</h3>
+                <p>دمج خوارزميات الذكاء الاصطناعي وتطوير نماذج بايثون لخدمة أعمالك ومشاريعك.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>الأمن السيبراني</h3>
+                <p>حماية الأنظمة والتطبيقات واختبار الاختراق لضمان أعلى مستويات الأمان.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses">
+        <div class="section-header">
+            <h2>الكورسات والبرامج التدريبية</h2>
+            <p>تعلم البرمجة من الصفر حتى الاحتراف مع تطبيق عملي ومتابعة مخصصة.</p>
+        </div>
+        <div class="grid">
+            <div class="course-card">
+                <div class="course-img"><i class="fab fa-python"></i></div>
+                <div class="course-body">
+                    <span class="course-tag">للمبتدئين والمتقدمين</span>
+                    <h3>دورة بايثون والذكاء الاصطناعي</h3>
+                    <p>تعلم أساسيات Python وحل المشكلات وبناء مشاريع ذكاء اصطناعي وتحليل البيانات.</p>
+                    <div class="course-footer">
+                        <span class="course-price">$120</span>
+                        <a href="#contact" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;">اشترك الآن</a>
+                    </div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="course-img"><i class="fab fa-react"></i></div>
+                <div class="course-body">
+                    <span class="course-tag">تطوير الويب</span>
+                    <h3>دورة Full-Stack Web Development</h3>
+                    <p>احترف بناء المواقع الكاملة باستخدام React و Node.js وقواعد البيانات الحديثة.</p>
+                    <div class="course-footer">
+                        <span class="course-price">$180</span>
+                        <a href="#contact" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;">اشترك الآن</a>
+                    </div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="course-img"><i class="fas fa-code-branch"></i></div>
+                <div class="course-body">
+                    <span class="course-tag">هندسة البرمجيات</span>
+                    <h3>دورة خوارزميات وهياكل البيانات</h3>
+                    <p>تأسيس قوي في التفكير البرمجي والاستعداد لمقابلات العمل في الشركات العالمية.</p>
+                    <div class="course-footer">
+                        <span class="course-price">$90</span>
+                        <a href="#contact" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;">اشترك الآن</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="section-header">
+            <h2>تواصل معنا</h2>
+            <p>هل لديك استفسار أو تريد البدء في مشروعك القادم؟ نحن هنا للمساعدة!</p>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>دعنا نتحدث!</h3>
+                <p>تواصل معنا للحصول على استشارة تقنية مجانية أو للاستفسار عن الكورسات والخدمات.</p>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                    <div>
+                        <small style="color: var(--text-muted);">البريد الإلكتروني</small>
+                        <div style="font-weight: 700;">info@codenest.com</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+                    <div>
+                        <small style="color: var(--text-muted);">الهاتف</small>
+                        <div style="font-weight: 700;">+966 50 123 4567</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div>
+                        <small style="color: var(--text-muted);">الموقع</small>
+                        <div style="font-weight: 700;">الرياض، المملكة العربية السعودية</div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="contactForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="name" class="form-control" placeholder="أدخل اسمك" required>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>الرسالة</label>
+                    <textarea id="message" class="form-control" placeholder="اكتب رسالتك أو استفسارك هنا..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-paper-plane"></i> إرسال الرسالة
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle" style="font-size: 1.3rem;"></i>
+        <span>تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.</span>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>جميع الحقوق محفوظة © 2026 | شركة Code Nest للحلول البرمجية والتدريب</p>
+    </footer>
+
+    <!-- JavaScript Interaction -->
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            
+            document.getElementById('contactForm').reset();
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
+"""
+
+# حفظ الملف بصيغة HTML
+filename = "code_nest_website.html"
+
+with open(filename, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"✨ تم إنشاء صفحة Code Nest بنجاح!")
+print(f"📁 اسم الملف: {filename}")
